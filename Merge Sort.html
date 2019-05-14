@@ -2,25 +2,47 @@
 <meta charset="utf-8" />
 <head>
   <style>
-    div {
-      margin-left: 40px;
-      margin-top: 20px;
-    }
-    text {
-      fill: black;
-    }
-    rect {
-      fill: blue;
-    }
-    .sorted {
-      fill: red;
-    }
-    .min {
-      fill: red;
-    }
-    .testing {
-      fill: red;
-    }
+        div {margin-left: 40px;margin-top: 20px}
+        text {fill: black;}
+        rect {fill: blue;}
+        .sorted {fill: red;}
+        .min {fill: red;}
+        .testing1 {fill: red;}
+        .testing2 {fill: darkgreen}
+		    .not-changed {fill: yellow;}
+		body{
+			margin: auto;
+			padding: auto;
+		}
+
+		.container{
+			display: flex;
+			flex-direction: column;
+			height: 400px;
+			width: 400px;
+		}
+		
+		.process {
+			display: flex;
+		}
+
+		.step{
+			background-color: #f1f1f1;
+			margin: 10px;
+			padding: 5px;
+			font-size: 30px;
+			height: 50px;
+			width: 350px;
+		}
+
+		.active {
+			background-color: green;
+			color: #fff;
+		}
+
+		svg {
+			margin-top: 80px;
+		}
   </style>
   <script src="d3.v5.min.js"></script>
 </head>
@@ -42,18 +64,18 @@
     </div>
     <h3>Pseudo Code</h3>
     <div class="container">
-      <div id="adim-1" class="step">begin MergeSort(list)</div>
-      <div id="adim-2" class="step">for all elements of list</div>
-      <div id="adim-3" class="step">"if list[i] > list[i+1]"</div>
-      <div id="adim-4" class="step">swap(list[i], list[i+1])</div>
-      <div id="adim-5" class="step">end BubbleSort</div>
+      <div class="pseudo">
+        <div id="adim-1" class="step">begin MergeSort(list)</div>
+        <div id="adim-2" class="step">for all elements of list</div>
+        <div id="adim-3" class="step">"if list[i] > list[i+1]"</div>
+        <div id="adim-4" class="step">swap(list[i], list[i+1])</div>
+        <div id="adim-5" class="step">end MergeSort</div>
+      </div>
       <div class="process">
         <h3>Sıralama Metodu:</h3>
         <div>Adımlar: <span id="counter">0</span></div>
-        <input type="radio" name="sorting" value="ktb" id="ktb" />Küçükten -
-        Büyüğe<br />
-        <input type="radio" name="sorting" value="btk" id="btk" />Büyükten -
-        Küçüğe<br />
+        <input type="radio" name="sorting" value="ktb" id="ktb" checked="true" />Küçükten -Büyüğe<br />
+        <input type="radio" name="sorting" value="btk" id="btk" />Büyükten -Küçüğe<br />
         <button id="baslat" onclick="mergeSort()" style="margin-left:40px">
           Başlat
         </button>
@@ -67,7 +89,7 @@
 </body>
 <script>
   var count = 1 + 10,
-    durationTime = 4000 / count,
+    durationTime = 8000 / count,
     array = d3.shuffle(d3.range(1, count)),
     unsortedArray = [11, 21, 23, 4, 3, 7, 8, 9, 5, 34],
     sortedArray = [],
@@ -75,23 +97,21 @@
     steps = 0,
     bogoShuffles = 0;
 
-  // if (confirm("Sıralamak istediğiniz sayıları rastgele oluşturmak için \"TAMAM\" butonuna,kendiniz girmek için \"İPTAL\" butonuna basınız.")) {
-  // 		var countVal = prompt("1-100 arası kaç farklı sayıyı sıralamak istiyorsunuz? (Sınır 1-50)");
-  // 		if(countVal>1 && countVal<51)
-  // 		{
-  // 			count = 1 + parseInt(countVal),
-  // 			array = d3.shuffle(d3.range(1,count)),
-  //             unsortedArray = [...array];
-  //             console.log(countVal+"----"+count)
-  // 		}
-  // }
-  // else {
-  // 		var values=prompt("Lütfen sıralanmasını istediğiniz birbirinden farklı değerleri aralarında virgül olacak şekilde boşluk bırakmadan giriniz:");
-  // 		var customArray = values.split(',').map(Number);
-  // 		console.log(customArray);
-  // 		count = 1 + customArray.length,
-  // 		unsortedArray = customArray;
-  // }
+  if (confirm("Sıralamak istediğiniz sayıları rastgele oluşturmak için \"TAMAM\" butonuna,kendiniz girmek için \"İPTAL\" butonuna basınız.")) {
+  		var countVal = prompt("1-100 arası kaç farklı sayıyı sıralamak istiyorsunuz? (Sınır 1-50)");
+  		if(countVal>1 && countVal<51)
+  		{
+  			count = 1 + parseInt(countVal),
+  			array = d3.shuffle(d3.range(1,count)),
+              unsortedArray = [...array];
+  		}
+  }
+  else {
+  		var values=prompt("Lütfen sıralanmasını istediğiniz birbirinden farklı değerleri aralarında virgül olacak şekilde boşluk bırakmadan giriniz:");
+  		var customArray = values.split(',').map(Number);
+  		count = 1 + customArray.length,
+  		unsortedArray = customArray;
+  }
 
   var margin = { top: 40, right: 40, bottom: 180, left: 40 },
     width = 960 - margin.left - margin.right,
@@ -149,16 +169,28 @@
       return (d * barWidth) / 3;
     });
 
+  function activeStep(element) {
+      var steps = document.getElementsByClassName("active");
+      var i;
+      for (i = 0; i < steps.length; i++) {
+        steps[i].classList.remove("active");
+      }
+      var step = document.getElementById(element).classList.add("active");
+	}
+
   function reset() {
     sortedArray = [];
     stop = false;
+    document.getElementById("durdur").disabled = true;
+    document.getElementById("baslat").disabled = false;
+	  activeStep("adim-2");
 
     d3.select("#counter").html((steps = 0));
 
     labels
       .attr("class", "")
       .transition()
-      .duration(2000)
+      .duration(8000)
       .attr("transform", function(d, i) {
         return "translate(" + x(i) + ", 0)";
       });
@@ -166,7 +198,7 @@
     rects
       .attr("class", "")
       .transition()
-      .duration(2000)
+      .duration(8000)
       .attr("transform", function(d, i) {
         return "translate(" + x(i - 1) + ", 0)";
       });
@@ -177,13 +209,15 @@
     document.getElementById("durdur").disabled = true;
     document.getElementById("baslat").disabled = false;
   }
+
   function mergeSort() {
     document.getElementById("baslat").disabled = true;
     document.getElementById("durdur").disabled = false;
+    radioVal=document.getElementById("ktb").checked;
+    activeStep("adim-1")
 
     var mergeReps = unsortedArray.length.toString(2).length + 1;
     var mergeArrays = [[...unsortedArray], []];
-    console.log("merge: "+mergeArrays);
 
     for (i = 0; i < unsortedArray.length; i += 2) {
       mergeArrays[1].push(mergeTwo([unsortedArray[i]], [unsortedArray[i + 1]]));
@@ -200,25 +234,41 @@
     for (i = 1; i < mergeArrays.length; i++) {
       mergeArrays[i] = d3.merge(mergeArrays[i]);
     }
+
     mergeMove(0);
 
     function mergeTwo(iArray, nArray) {
       var newArray = [];
       for (var i = 0, n = 0; i < iArray.length || n < nArray.length; ) {
-        if (iArray[i] < nArray[n]) {
-          newArray.push(iArray[i++]);
-        } else if (iArray[i] > nArray[n]) {
-          newArray.push(nArray[n++]);
-        } else if (!iArray[i]) {
-          newArray.push(nArray[n++]);
-        } else if (!nArray[n]) {
-          newArray.push(iArray[i++]);
+        if (!radioVal){
+          if (iArray[i] > nArray[n]) {
+            newArray.push(iArray[i++]);
+          } else if (iArray[i] < nArray[n]) {
+            newArray.push(nArray[n++]);
+          } else if (!iArray[i]) {
+            newArray.push(nArray[n++]);
+          } else if (!nArray[n]) {
+            newArray.push(iArray[i++]);
+          }
+        }
+        else{
+          if (iArray[i] < nArray[n]) {
+            newArray.push(iArray[i++]);
+          } else if (iArray[i] > nArray[n]) {
+            newArray.push(nArray[n++]);
+          } else if (!iArray[i]) {
+            newArray.push(nArray[n++]);
+          } else if (!nArray[n]) {
+            newArray.push(iArray[i++]);
+          }
         }
       }
       return newArray;
     }
 
     function mergeMove(j) {
+      console.log("eren")
+      
       var oldArray = mergeArrays[j],
         newArray = [...mergeArrays[j + 1]],
         sortedArray = [];
@@ -226,12 +276,13 @@
       moveStep(0);
 
       function moveStep(n) {
-        console.log(stop);
+        activeStep("adim-3")
         if (stop) return (stop = false);
         d3.selectAll("rect").attr("class", "");
-
+        activeStep("adim-4")
         d3.select("#counter").html(++steps);
-        d3.select("#rect" + newArray[n]).attr("class", "testing");
+        d3.select("#rect" + newArray[n]).classed("testing1", true);
+        d3.select("#rect" + newArray[n+1]).classed("not-changed", true);
 
         sortedArray.push(newArray[n]);
         oldArray.shift();
@@ -267,7 +318,7 @@
           } else if (mergeArrays[j + 2]) {
             mergeMove(++j);
           } else {
-            rects.classed("testing", false);
+            rects.classed("testing1", false);
           }
         }, durationTime);
       }
